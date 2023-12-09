@@ -9,19 +9,19 @@ const authHandler = {
   registerHandler: async (req: Request, res: Response) => {
     // Extract user details from the request body
     const {
-      name,
+      username,
       email,
       password,
       confirmPassword,
     }: {
-      name: string;
+      username: string;
       email: string;
       password: string;
       confirmPassword: string;
     } = req.body;
 
     // Validate the request body
-    if (!name || !email || !password || !confirmPassword) {
+    if (!username || !email || !password || !confirmPassword) {
       throw new CustomError("All fields are required", 400);
     }
 
@@ -39,7 +39,7 @@ const authHandler = {
 
       // Create a new user
       const newUser = new User({
-        name,
+        username,
         email,
         password: password.toString(),
         confirmPassword,

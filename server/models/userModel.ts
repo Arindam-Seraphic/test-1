@@ -8,7 +8,7 @@ config();
 
 // Define the user schema
 interface IUser extends Document {
-  name: string;
+  username: string;
   email: string;
   password: string;
   generateAuthToken(): string;
@@ -21,7 +21,7 @@ interface IUserModel extends Model<IUser> {
 }
 
 const userSchema = new Schema<IUser>({
-  name:{type:String, required:true, unique:true},
+  username:{type:String, required:true, unique:true},
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });
