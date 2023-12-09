@@ -1,14 +1,12 @@
 // db.ts
+import { config } from "dotenv";
 import mongoose from "mongoose";
-import config from "config";
 
-const dbConfig = config.get("database") as {
-  url: string;
-};
+config();
 
 const connectToDatabase = async (): Promise<void> => {
   try {
-    await mongoose.connect(dbConfig.url);
+    await mongoose.connect(process?.env?.URL?process.env.URL:"");
 
     console.log("Connected to MongoDB");
   } catch (error) {

@@ -13,12 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 // db.ts
+const dotenv_1 = require("dotenv");
 const mongoose_1 = __importDefault(require("mongoose"));
-const config_1 = __importDefault(require("config"));
-const dbConfig = config_1.default.get("database");
+(0, dotenv_1.config)();
 const connectToDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
-        yield mongoose_1.default.connect(dbConfig.url);
+        yield mongoose_1.default.connect(((_a = process === null || process === void 0 ? void 0 : process.env) === null || _a === void 0 ? void 0 : _a.URL) ? process.env.URL : "");
         console.log("Connected to MongoDB");
     }
     catch (error) {

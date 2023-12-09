@@ -2,13 +2,9 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 import bcrypt from "bcrypt";
 import jwt, { Secret } from "jsonwebtoken";
-import config from "config";
+import {config} from "dotenv";
 
-// const secret = config.get("jwt") as {
-//   secret: string
-// };
-const secretConfig = config.get("jwt") as { secret: string };
-const secret: Secret = secretConfig.secret;
+config();
 
 // Define the user schema
 interface IUser extends Document {
@@ -30,7 +26,7 @@ const userSchema = new Schema<IUser>({
 
 // JWT token generation method
 userSchema.methods.generateAuthToken = function (): string {
-  const token = jwt.sign({ _id: this._id, email: this.email }, secret);
+  const token = jwt.sign({ _id: this._id, email: this.email }, process?.env?.SECRET?process.env.SECRET:"secret",);
   return token;
 };
 

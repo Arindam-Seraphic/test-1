@@ -1,13 +1,14 @@
 // src/index.ts
 import express, { Request, Response } from "express";
-import config from "config";
+import {config} from "dotenv";
 import connectToDatabase from "../utilities/dbConnection";
 import { handleGlobalError } from "../utilities/error-handler";
 import cors from "cors";
 import router from "../routes/index";
 
 const app = express();
-const port = config.get("server.port") as number;
+config();
+const port = process?.env?.PORT ? process?.env?.PORT:8080
 
 // Middleware to handle global errors
 app.use(handleGlobalError);

@@ -39,19 +39,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const config_1 = __importDefault(require("config"));
-// const secret = config.get("jwt") as {
-//   secret: string
-// };
-const secretConfig = config_1.default.get("jwt");
-const secret = secretConfig.secret;
+const dotenv_1 = require("dotenv");
+(0, dotenv_1.config)();
 const userSchema = new mongoose_1.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
 });
 // JWT token generation method
 userSchema.methods.generateAuthToken = function () {
-    const token = jsonwebtoken_1.default.sign({ _id: this._id, email: this.email }, secret);
+    var _a;
+    const token = jsonwebtoken_1.default.sign({ _id: this._id, email: this.email }, ((_a = process === null || process === void 0 ? void 0 : process.env) === null || _a === void 0 ? void 0 : _a.SECRET) ? process.env.SECRET : "secret");
     return token;
 };
 // Hash the password before saving
