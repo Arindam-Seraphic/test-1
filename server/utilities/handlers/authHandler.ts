@@ -82,7 +82,7 @@ const authHandler = {
 
       // Check if the user has an existing session
       const existingSession = await Session.findOne({ user: user._id });
-
+      console.log(existingSession);
       // Expire the existing session
       if (existingSession) {
         await Session.deleteOne({ _id: existingSession._id });
@@ -102,6 +102,15 @@ const authHandler = {
       handleResponse(res, 200, { message: "Login successful", token });
     } catch (error: any) {
       // Handle authentication failure errors
+      throw new CustomError(error.message, error.statusCode);
+    }
+  },
+
+  // authenticity handler
+  authenticityHandler: async (req: Request, res: Response) => {
+    try {
+      handleResponse(res, 200, { message: "authentication successful" });
+    } catch (error: any) {
       throw new CustomError(error.message, error.statusCode);
     }
   },

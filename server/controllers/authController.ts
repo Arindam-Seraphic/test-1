@@ -17,6 +17,11 @@ const authController = {
       await authHandler.loginHandler(req, res);
     });
   },
+  authenticityController: async (req: Request, res: Response, next: NextFunction) => {
+    handleRequest(req, res, next, async () => {
+      await authHandler.authenticityHandler(req, res);
+    });
+  },
 };
 
 export default authController;
