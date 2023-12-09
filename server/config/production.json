@@ -1,0 +1,11 @@
+{
+  "server": {
+    "port": 8080
+  },
+  "database": {
+    "url": "mongodb+srv://Arindam_300695:Arindam@noobcoder.n9ul9mb.mongodb.net/automate_apply?retryWrites=true&w=majority"
+  },
+  "jwt": {
+    "secret": "secret"
+  }
+}
