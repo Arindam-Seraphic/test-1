@@ -8,6 +8,7 @@ config();
 
 // Define the user schema
 interface IUser extends Document {
+  name: string;
   email: string;
   password: string;
   generateAuthToken(): string;
@@ -20,13 +21,21 @@ interface IUserModel extends Model<IUser> {
 }
 
 const userSchema = new Schema<IUser>({
+  name:{type:String, required:true, unique:true},
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });
 
-// JWT token generation method
 userSchema.methods.generateAuthToken = function (): string {
-  const token = jwt.sign({ _id: this._id, email: this.email }, process?.env?.SECRET?process.env.SECRET:"secret",);
+  // Set the desired expiration time (e.g., 1 hour)
+  const expiresIn = "1h";
+
+  const token = jwt.sign(
+    { _id: this._id, email: this.email },
+    process.env.SECRET || "defaultSecret", // Use your secret key
+    { expiresIn }
+  );
+
   return token;
 };
 

@@ -2,19 +2,26 @@ import { CustomError } from "../error-handler";
 import { Request, Response } from "express";
 import User from "../../models/userModel";
 import { handleResponse } from "../req-res-handler";
+import Session from "../../models/sessionModel";
 
 const authHandler = {
   // register handler
   registerHandler: async (req: Request, res: Response) => {
     // Extract user details from the request body
     const {
+      name,
       email,
       password,
       confirmPassword,
-    }: { email: string; password: string; confirmPassword: string } = req.body;
+    }: {
+      name: string;
+      email: string;
+      password: string;
+      confirmPassword: string;
+    } = req.body;
 
     // Validate the request body
-    if (!email || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword) {
       throw new CustomError("All fields are required", 400);
     }
 
@@ -32,6 +39,7 @@ const authHandler = {
 
       // Create a new user
       const newUser = new User({
+        name,
         email,
         password: password.toString(),
         confirmPassword,
@@ -51,16 +59,13 @@ const authHandler = {
 
   // login handler
   loginHandler: async (req: Request, res: Response) => {
-    // Extract user details from the request body
     const { email, password }: { email: string; password: string } = req.body;
 
-    // Validate the request body
     if (!email || !password) {
       throw new CustomError("Email and password are required", 400);
     }
 
     try {
-      // Use the isPasswordValid method to check if the password is valid
       const user = await User.findByEmail(email);
       if (!user) {
         throw new CustomError("Invalid email or password", 401);
@@ -71,13 +76,30 @@ const authHandler = {
         password.toString()
       );
 
-      // At this point, authentication is successful
-      // Generate a JWT token using the generateAuthToken method
-      const token = user?.generateAuthToken();
+      if (!isPasswordValid) {
+        throw new CustomError("Invalid email or password", 401);
+      }
+
+      // Check if the user has an existing session
+      const existingSession = await Session.findOne({ user: user._id });
+
+      // Expire the existing session
+      if (existingSession) {
+        await Session.deleteOne({ _id: existingSession._id });
+      }
+
+      // Generate a new JWT token
+      const token = user.generateAuthToken();
+
+      // Store the new token in the session storage (MongoDB)
+      const newSession = new Session({
+        user: user._id,
+        token,
+      });
+      await newSession.save();
 
       // Send the token in the response
-      isPasswordValid &&
-        handleResponse(res, 200, { message: "Login successful", token });
+      handleResponse(res, 200, { message: "Login successful", token });
     } catch (error: any) {
       // Handle authentication failure errors
       throw new CustomError(error.message, error.statusCode);
