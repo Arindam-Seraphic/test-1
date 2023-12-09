@@ -42,13 +42,15 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = require("dotenv");
 (0, dotenv_1.config)();
 const userSchema = new mongoose_1.Schema({
+    username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
 });
-// JWT token generation method
 userSchema.methods.generateAuthToken = function () {
-    var _a;
-    const token = jsonwebtoken_1.default.sign({ _id: this._id, email: this.email }, ((_a = process === null || process === void 0 ? void 0 : process.env) === null || _a === void 0 ? void 0 : _a.SECRET) ? process.env.SECRET : "secret");
+    // Set the desired expiration time (e.g., 1 hour)
+    const expiresIn = "1h";
+    const token = jsonwebtoken_1.default.sign({ _id: this._id, email: this.email }, process.env.SECRET || "defaultSecret", // Use your secret key
+    { expiresIn });
     return token;
 };
 // Hash the password before saving
@@ -80,7 +82,7 @@ User.isPasswordValid = function (email, password) {
         }
         const isPasswordValid = yield bcrypt_1.default.compare(password, user.password);
         if (!isPasswordValid) {
-            throw new Error("Invalid email or password1");
+            throw new Error("Invalid email or password");
         }
         return true;
     });

@@ -25,5 +25,10 @@ const authController = {
             yield authHandler_1.default.loginHandler(req, res);
         }));
     }),
+    authenticityController: (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        (0, req_res_handler_1.handleRequest)(req, res, next, () => __awaiter(void 0, void 0, void 0, function* () {
+            yield authHandler_1.default.authenticityHandler(req, res);
+        }));
+    }),
 };
 exports.default = authController;
