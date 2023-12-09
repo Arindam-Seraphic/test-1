@@ -15,7 +15,6 @@ export const handleRequest = async (
       // If it's a custom error, you can pass it to the global error handler
       return handleGlobalError(error, req, res, next);
     } else {
-      console.error("Error:", error);
       // Alternatively, you can still respond directly to non-custom errors
       res.status(500).json({ error: "Internal Server Error" });
     }

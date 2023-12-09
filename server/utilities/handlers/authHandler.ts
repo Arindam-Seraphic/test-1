@@ -36,7 +36,7 @@ const authHandler = {
         password: password.toString(),
         confirmPassword,
       });
-      console.log(newUser);
+
       await newUser.save();
 
       handleResponse(res, 201, {
@@ -70,16 +70,14 @@ const authHandler = {
         email,
         password.toString()
       );
-      if (!isPasswordValid) {
-        throw new CustomError("Invalid email or password", 401);
-      }
 
       // At this point, authentication is successful
       // Generate a JWT token using the generateAuthToken method
-      const token = user.generateAuthToken();
+      const token = user?.generateAuthToken();
 
       // Send the token in the response
-      handleResponse(res, 200, { message: "Login successful", token });
+      isPasswordValid &&
+        handleResponse(res, 200, { message: "Login successful", token });
     } catch (error: any) {
       // Handle authentication failure errors
       throw new CustomError(error.message, error.statusCode);

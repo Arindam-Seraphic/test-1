@@ -22,7 +22,6 @@ const handleGlobalError = (
   res: Response,
   next: NextFunction
 ) => {
-  console.log("Error:", err);
 
   // Check if it's a custom error
   if (err instanceof CustomError) {
